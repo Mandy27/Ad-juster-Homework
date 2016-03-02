@@ -3,7 +3,7 @@ package client;
 import java.util.Date;
 
 public class Campaign {
-	public Date startDate;
+	private Date startDate;
 	private String cpm;
 	private int id;
 	private String name;
