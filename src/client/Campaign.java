@@ -1,17 +1,15 @@
 package client;
 
-import java.util.Date;
-
 public class Campaign {
-	private Date startDate;
+	private String startDate;
 	private String cpm;
 	private int id;
 	private String name;
 	
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 	
