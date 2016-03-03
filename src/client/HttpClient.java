@@ -1,3 +1,7 @@
+/* By Mandy Ngo
+ * Email: mandyngo27@gmail.com
+ */
+
 package client;
 
 import java.io.BufferedReader;
@@ -7,8 +11,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,9 +41,10 @@ public class HttpClient {
 			connection = DriverManager.getConnection(
 					"jdbc:postgresql://localhost:5432/AdjusterHomework", "Mandy",
 					"");
-			PreparedStatement stmt;
-			String query = "INSERT INTO AdjusterHomework(campaign_startdate, campaign_cpm, campaign_id, campaign_name, total_clicks, total_views) VALUES(?,?,?,?,?,?)";
-			stmt = connection.prepareStatement(query);
+			Statement stmt;
+			String filename = "ngo_mandy.csv";
+			String query = "copy adjusterreport from '/Users/Mandy/Documents/Eclipseworkspace/Ad-juster_Homework/"+filename+"' WITH CSV HEADER DELIMITER AS ',';";
+			stmt = connection.createStatement();
 			
 			Campaign[] campaignList = getCampaigns();
 			Creative[] creativeList = getCreatives();
@@ -61,7 +66,7 @@ public class HttpClient {
 	        }
 	        FileWriter fileWriter = null;
 	        try{
-		        fileWriter = new FileWriter("ngo_mandy.csv");
+		        fileWriter = new FileWriter(filename);
 		        String FILE_HEADER = "Start Date, CPM, ID, Name, Total Clicks, Total Views";
 		        fileWriter.append(FILE_HEADER);		// Write csv header
 		        fileWriter.append("\n");
@@ -81,7 +86,7 @@ public class HttpClient {
 		        	fileWriter.append(",");
 		        	fileWriter.append(String.valueOf(values[1]));
 		        	fileWriter.append("\n");
-		        	System.out.println(campaign_id+", "+campaignList[i].getName()+", "+campaignList[i].getStartDate()+", "+campaignList[i].getCpm()+", "+values[0]+", "+values[1]);
+		        	//System.out.println(campaign_id+", "+campaignList[i].getName()+", "+campaignList[i].getStartDate()+", "+campaignList[i].getCpm()+", "+values[0]+", "+values[1]);
 		        }
 	        }catch(Exception e){
 	        	System.out.println("FileWriter Failed!");
@@ -90,6 +95,9 @@ public class HttpClient {
 	        	try{
 	        		fileWriter.flush();
 	        		fileWriter.close();
+	        		System.out.println("Successfully create csv file!!!");
+	        		stmt.executeUpdate(query);
+	        		System.out.println("Successfully import data to database!!!");
 	        	}catch(IOException e){
 	        		System.out.println("flushing/closing fileWriter failed !");
 	        		e.printStackTrace();
